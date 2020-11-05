@@ -5,10 +5,7 @@ from ansible_collections.moc.mailman.plugins.module_utils.mailman import Mailman
 def run_module():
     mm = Mailman()
 
-    module_args = dict(
-        state=dict(type='str', default='present'),
-        name=dict(type='str', required=True),
-    )
+    module_args = dict()
 
     result = dict(
         changed=False,
@@ -19,13 +16,8 @@ def run_module():
         supports_check_mode=True
     )
 
-    list_name = module.params['name']
-
     result['mailman'] = {
-        'name': list_name,
-        'members': mm.list_regular_members(list_name),
-        'digest_members': mm.list_digest_members(list_name),
-        'config': mm.get_list_config(list_name),
+        'lists': mm.list_lists(),
     }
 
     module.exit_json(**result)
