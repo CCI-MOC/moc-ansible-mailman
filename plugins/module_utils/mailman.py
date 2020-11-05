@@ -67,7 +67,7 @@ class Mailman(object):
         ret = p.wait()
 
         if ret != 0:
-            raise CalledProcessError(cmd, ret, out, err)
+            raise CalledProcessError(cmdvec, ret, out, err)
 
         return out if raw else out.decode()
 

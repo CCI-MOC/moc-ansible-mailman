@@ -47,7 +47,7 @@ def test_failing_command(mock_subprocess, mm):
     assert err.value.returncode == 13
     assert err.value.stdout == b'out'
     assert err.value.stderr == b'err'
-    assert err.value.command == 'fake'
+    assert err.value.command == ['/usr/lib/mailman/bin/fake']
 
 
 def test_normal_command(mock_subprocess, mm):
