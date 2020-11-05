@@ -97,7 +97,8 @@ def test_list_members(mock_subprocess, mm):
 def test_get_list_config(mock_subprocess, mm):
     sample_config = '''
     # Here is an example config item
-    testitem = 'testvalue'
+    testitem1 = 'testvalue'
+    testitem2 = False
     '''
     sample_config = '\n'.join(line.lstrip() for line in sample_config.splitlines())
     mock_popen = mock.Mock()
@@ -108,14 +109,23 @@ def test_get_list_config(mock_subprocess, mm):
     res = mm.get_list_config('example')
     assert mock_subprocess.Popen.call_args[0] == (
         ['/usr/lib/mailman/bin/config_list', '-o', '-', 'example'],)
-    assert res['testitem'] == 'testvalue'
+    assert res == {
+        'testitem1': 'testvalue',
+        'testitem2': False,
+    }
 
 
 def test_set_list_config(monkeypatch, mock_subprocess, mm):
     sample_config = {
-        'testitem': 'testvalue',
+        'testitem1': 'testvalue',
+        'testitem2': False,
     }
-    expected_output = b'true = True\nfalse = False\ntestitem = "testvalue"\n'
+    expected_output = (
+        b'true = True\n'
+        b'false = False\n'
+        b'testitem1 = "testvalue"\n'
+        b'testitem2 = false\n'
+    )
 
     mock_popen = mock.Mock()
     mock_subprocess.Popen.return_value = mock_popen
