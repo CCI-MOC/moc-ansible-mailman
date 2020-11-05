@@ -45,3 +45,23 @@
           loop:
             - alice@example.com
             - bob@example.com
+
+    - name: configure list
+      mailman_list:
+        name: test-list
+        owner: owner@example.com
+        config:
+          description: 'This is a test'
+      register: config
+
+    - when: config is changed
+      block:
+        - name: get list info
+          mailman_list_info:
+            name: test-list
+          register: info
+
+        - name: check list description
+          assert:
+            that: >-
+              info.mailman.config.description == 'This is a test'
