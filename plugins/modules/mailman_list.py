@@ -58,18 +58,19 @@ def run_module():
                     emailhost=module.params['emailhost'])
                 result['stdout'] = out
 
-            cur_config = mm.get_list_config(list_name)
-            new_config = {}
-            for k, v in module.params.get('config', {}).items():
-                if cur_config[k] != v:
-                    new_config[k] = v
+            if module.params.get('config'):
+                cur_config = mm.get_list_config(list_name)
+                new_config = {}
+                for k, v in module.params.get('config', {}).items():
+                    if cur_config[k] != v:
+                        new_config[k] = v
 
-            if new_config:
-                result['changed'] = True
-                mm.set_list_config(list_name, new_config)
+                if new_config:
+                    result['changed'] = True
+                    mm.set_list_config(list_name, new_config)
 
-            result['config'] = mm.get_list_config(list_name)
-            result['new_config'] = new_config
+                result['config'] = mm.get_list_config(list_name)
+                result['new_config'] = new_config
         elif module.params['state'] == 'absent':
             if mm.list_exists(list_name):
                 result['changed'] = True
