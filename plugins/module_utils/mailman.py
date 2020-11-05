@@ -206,11 +206,11 @@ class Mailman(object):
         '''
 
         with tempfile.NamedTemporaryFile() as fd:
-            fd.write('true = True\n')
-            fd.write('false = False\n')
+            fd.write(b'true = True\n')
+            fd.write(b'false = False\n')
 
             for k, v in config.items():
-                fd.write("{} = {}\n".format(k, json.dumps(v)))
+                fd.write('{} = {}\n'.format(k, json.dumps(v)).encode())
 
             fd.flush()
             return self.run('config_list', '-i', fd.name, listname)
