@@ -20,7 +20,7 @@ def run_module():
         emailhost=dict(type='str'),
         urlhost=dict(type='str'),
         remove_archives=dict(type='bool', default=False),
-        quiet=dict(type='bool', default=False),
+        notify_owner=dict(type='bool', default=True),
         config=dict(type='dict'),
     )
 
@@ -53,7 +53,7 @@ def run_module():
 
                 out = mm.create_list(
                     list_name, list_owner, list_password,
-                    quiet=module.params['quiet'],
+                    notify_owner=module.params['notify_owner'],
                     urlhost=module.params['urlhost'],
                     emailhost=module.params['emailhost'])
                 result['stdout'] = out

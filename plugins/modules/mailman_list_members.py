@@ -48,7 +48,7 @@ def run_module():
                 module.exit_json(**result)
 
             if result['changed']:
-                result['stdout'] = mm.remove_regular_members(list_name, want_members)
+                result['stdout'] = mm.remove_members(list_name, want_members)
 
         result['members'] = mm.list_regular_members(list_name)
         module.exit_json(**result)
