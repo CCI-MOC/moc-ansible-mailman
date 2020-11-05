@@ -36,4 +36,23 @@ Modules for interacting with [Mailman][] mailing lists.
       - trudy@example.com
 ```
 
+### Back up configuration for all lists
+
+```
+- name: get list of mailing lists
+  mailman_lists_info:
+  register: lists
+
+- name: get information for each list
+  mailman_list_info:
+    name: "{{ item }}"
+  loop: "{{ lists.mailman.lists }}"
+  register: detail
+
+- name: save list information to a file
+  copy:
+    content: "{{ detail.results|json_query('[].mailman')|to_nice_json }}"
+    dest: lists.json
+```
+
 [mailman]: https://list.org/
