@@ -1,0 +1,47 @@
+---
+- name: Converge
+  hosts: all
+  collections:
+    - moc.mailman
+  tasks:
+    - name: create a mailing list
+      mailman_list:
+        name: test-list
+        owner: owner@example.com
+        notify_owner: false
+      register: create_list
+
+    - when: create_list is changed
+      block:
+        - name: get list of lists
+          command: >-
+            /usr/lib/mailman/bin/list_lists -b
+          register: lists
+
+        - name: verify list was created
+          assert:
+            that: >-
+              'test-list' in lists.stdout_lines
+
+    - name: subscribe members to list
+      mailman_list_members:
+        name: test-list
+        members:
+          - alice@example.com
+          - bob@example.com
+      register: subscribe_members
+
+    - when: subscribe_members is changed
+      block:
+        - name: get list of members
+          command: >-
+            /usr/lib/mailman/bin/list_members test-list
+          register: members
+
+        - name: verify subscribers in list
+          assert:
+            that: >-
+              item in members.stdout_lines
+          loop:
+            - alice@example.com
+            - bob@example.com

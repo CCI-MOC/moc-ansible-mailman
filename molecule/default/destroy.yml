@@ -1,0 +1,28 @@
+---
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+
+    - name: delete test containers
+      command: >-
+        podman rm -f molecule-{{ item.name }}-{{ idx }}
+      ignore_errors: true
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        index_var: idx
+
+    - name: Populate instance config
+      set_fact:
+        instance_conf: {}
+
+    - name: Dump instance config
+      copy:
+        content: |
+          # Molecule managed
+
+          {{ instance_conf | to_json | from_json | to_yaml }}
+        dest: "{{ molecule_instance_config }}"
+      when: server.changed | default(false) | bool
